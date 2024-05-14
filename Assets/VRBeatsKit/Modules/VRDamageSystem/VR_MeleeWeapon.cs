@@ -8,6 +8,9 @@ namespace DamageSystem
     //this script controls the melee weapons like the sword, 
     //in the demo scene and the weapons prefabs, all the weapons can be use as melee weapons to, 
     //so they use this script
+    // /这个脚本控制近战武器，比如剑，
+    //在演示场景和武器预制件中，所有武器都可以用作近战武器，
+    //所以他们使用这个脚本
     public class VR_MeleeWeapon : MonoBehaviour
     {
         #region INSPECTOR              
@@ -41,9 +44,9 @@ namespace DamageSystem
             //we do it in the fixed update because the player can move his hands very quickly
             if ( grabbable.CurrentGrabState == GrabState.Grab && grabbable.GrabController.Velocity.magnitude > minSpeed )
             {
-               
                 List<Collider> hitColliders = fastCollisionListener.CheckForCollisionsThisFrame();
-
+                Debug.Log(hitColliders.Count);
+                
                 for (int n = 0; n < hitColliders.Count; n++)
                 {
                     TryDoDamage(hitColliders[n].transform, hitColliders[n].transform.position);

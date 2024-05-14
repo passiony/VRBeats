@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace VRSDK
 {
@@ -26,9 +27,13 @@ namespace VRSDK
                 
                 //calculate the EMA (Exponential Moving Average), just a way to predict the desire throw velocity base on previus velocities
                 //you can read more here https://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average
-                float velocityMagnitudeEMA = CalculateMagnitudeEMA( velocityHistory, throwSmoothVelocity );
 
-               
+                float velocityMagnitudeEMA = 0;
+                if(velocityHistory.Count != 0)
+                {
+                    velocityMagnitudeEMA = CalculateMagnitudeEMA( velocityHistory, throwSmoothVelocity );
+                }
+                
                 return throwDirection * velocityMagnitudeEMA * velocityModifier;
             }
         }
@@ -87,14 +92,16 @@ namespace VRSDK
         private Vector3 CalculateThrowDirection()
         {
             List<Vector3> localPositionHistory = historyBuffer.LocalPositionHistory.Sample( handDirectionSampleSize );
-
-            Vector3 throwDirection = (  localPositionHistory[localPositionHistory.Count - 1] - localPositionHistory[0] ).normalized;
-
+            if (localPositionHistory.Count == 0)
+            {
+                return Vector3.zero;
+            }
+            
+            Vector3 throwDirection = (  localPositionHistory.Last() - localPositionHistory.First() ).normalized;
             if (trackingSpace != null)
             {
                 return trackingSpace.TransformDirection( throwDirection );
             }
-
             return throwDirection;
         }
 
